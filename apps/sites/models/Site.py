@@ -6,6 +6,7 @@ from django.conf import settings
 class Site(models.Model):
     title = models.CharField(max_length=200, default = 'No title')
     url = models.URLField()
+    short_url = models.URLField(default = None, null = True)
     visitors = models.IntegerField(default = 0)
 
     def __str__(self):
@@ -19,7 +20,7 @@ class Site(models.Model):
             response = requests.get(url)
             html = response.content
 
-            soup = BeautifuSoup(html)
+            soup = BeautifulSoup(html, 'html.parser')
 
             title = soup.title.string
 
@@ -30,8 +31,15 @@ class Site(models.Model):
 
             site = cls.objects.create(**site_dict)
 
-        short_url = '/'.join([settings.DOMAIN, 'site', str(site.id)])
+        if site.short_url:
+            short_url = site.short_url
+        else:
+            short_url = '/'.join([settings.DOMAIN, 'site', str(site.id)])
 
-        return short_url
+            site.short_url = short_url
+            
+            site.save()
+        
+        return site
 
 
