@@ -2,6 +2,8 @@ from django.db import models
 import requests
 from bs4 import BeautifulSoup 
 from django.conf import settings
+import pyqrcode
+from urllib.parse import urlparse
 
 class Site(models.Model):
     title = models.CharField(max_length=200, default = 'No title')
@@ -11,6 +13,23 @@ class Site(models.Model):
 
     def __str__(self):
         return self.url
+
+    def generate_qr_code(self):
+        url = pyqrcode.create(self.short_url)
+
+        return url
+
+    def change_short_url_domain(self):
+        new_domain = settings.DOMAIN
+        previous_domain = settings.PREVIOUS_DOMAIN
+
+        short_url = self.short_url
+
+        short_url = short_url.replace(previous_domain, new_domain)
+
+        self.short_url = short_url
+
+        self.save()
 
     @classmethod
     def register_new_site(cls, url):

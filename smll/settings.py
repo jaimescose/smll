@@ -121,3 +121,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DOMAIN = 'http://127.0.0.1:8000'
+PREVIOUS_DOMAIN = 'http://vacilevacilao.com//http://vacilevacilao.com//vacilevacilao.com'
