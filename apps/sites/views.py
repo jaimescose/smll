@@ -21,4 +21,8 @@ class SiteView(View):
 
         site = Site.register_new_site(url)
 
-        response = HttpResponse('developing')
+        serialized_queryset = serializers.serialize('json', [site, ])
+
+        response = HttpResponse(serialized_queryset)
+
+        return response
